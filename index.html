@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="tf141styles.css">
+    <script>
+        let internshipData = [];
+        let reportData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showSection(this.getAttribute('href').substring(1));
+                });
+            });
+        });
+
+        function showMenu() {
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('login').style.display = 'none';
+            showSection('internship-details'); // Show the first section by default
+        }
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function updateViewSubmissions() {
+            const internshipList = document.getElementById('internship-list');
+            const reportList = document.getElementById('report-list');
+            internshipList.innerHTML = ''; // Clear previous entries
+            reportList.innerHTML = ''; // Clear previous entries
+
+            internshipData.forEach(data => {
+                const li = document.createElement('li');
+                li.textContent = `Internship: ${data.companyName} - Submitted on: ${data.startDate}`;
+                internshipList.appendChild(li);
+            });
+
+            reportData.forEach(data => {
+                const li = document.createElement('li');
+                li.textContent = `Report: ${data.reportType} - Submitted on: ${data.reportDate}`;
+                reportList.appendChild(li);
+            });
+        }
+
+        function validateInternshipForm() {
+            const startDate = document.getElementById('start-date').value;
+            const companyName = document.getElementById('company-name').value;
+            const companyAddress = document.getElementById('company-address').value;
+            const externalMentorName = document.getElementById('external-mentor-name').value;
+            const externalMentorContact = document.getElementById('external-mentor-contact').value;
+            const stipendAmount = document.getElementById('stipend-amount').value;
+            const offerLetter = document.getElementById('offer-letter').value;
+
+            if (!startDate || !companyName || !companyAddress || !externalMentorName || !externalMentorContact || !stipendAmount || !offerLetter) {
+                alert("Please fill all the fields before submitting.");
+                return false;
+            }
+
+            // Store internship data
+            internshipData.push({
+                companyName: companyName,
+                startDate: startDate,
+                companyAddress: companyAddress,
+                externalMentorName: externalMentorName,
+                externalMentorContact: externalMentorContact,
+                stipendAmount: stipendAmount,
+                offerLetter: offerLetter
+            });
+
+            // Hide internship form and show success page
+            showSection('success-page');
+            return false; // Prevent actual form submission
+        }
+
+        function validateReportForm() {
+            const reportType = document.getElementById('report-type').value;
+            const reportFile = document.getElementById('report-file').value;
+
+            if (!reportType || !reportFile) {
+                alert("Please select the report type and upload the file.");
+                return false;
+            }
+
+            // Store report data
+            const reportDate = new Date().toLocaleDateString();
+            reportData.push({
+                reportType: reportType,
+                reportDate: reportDate,
+                reportFile: reportFile
+            });
+
+            // Hide report form and show success page
+            showSection('success-page');
+            return false; // Prevent actual form submission
+        }
+
+        function logout() {
+            document.getElementById('menu').style.display = 'none';
+            document.getElementById('login').style.display = 'block';
+        }
+
+        function goBack() {
+            showSection('menu'); // Go back to the menu
+        }
+    </script>
+
+    <style>
+        
+        body {
+            width: 100%;
+            height: 1000px;
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(to bottom, rgba(57,173,219,.25) 0%, rgba(42,60,87,.4) 100%), linear-gradient(135deg, #670d10 0%, #092756 100%);
+        }
+        
+        header {
+            background-color: #0078d4;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+            background-color: transparent;    
+            background-size: cover;
+            background-position: center;
+            height: 60px; /* Adjusted height for a shorter image */
+        }
+        
+        header h1 {
+            font-size: 36px;
+            margin: 0;
+            color: #fff;
+        }
+        
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        .menu-container {
+            text-align: center;
+        }
+        
+        .menu-container h2 {
+            font-size: 24px;
+            color: #fff;
+            margin-bottom: 30px;
+        }
+        
+        nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        nav ul li {
+            display: inline-block;
+            margin: 10px 15px;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            font-weight: 500;
+            color: #0078d4;
+            font-size: 18px;
+            position: relative;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 3px;
+            background-color: #ffeb3b;
+            bottom: -5px;
+            left: 0;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        nav ul li a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+        
+        nav ul li a:hover {
+            color: #ffeb3b;
+            transform: translateY(-2px);
+        }
+        
+        .form-container {
+            width: 40%;
+            margin: 5% auto; 
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 30px; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        .form-container h2 {
+            color: #fff;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        
+        .form-container label {
+            position: relative ;
+            font-size: 1rem;
+            color: #fff;
+            margin-bottom: -10px;
+            display: block; 
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        input[type="date"],
+        input[type="tel"],
+        input[type="number"],
+        input[type="file"],
+        select {
+            width: 100%;
+            margin: 10px 0; 
+            padding: 12px; 
+            font-size: 1rem; 
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus effects */
+        }
+        
+        input:focus {
+            box-shadow: 0 0 5px rgba(0, 120, 212, 0.5);
+            border-color: #0078d4;
+            background-color: transparent;
+        }
+        
+        button {
+            width: 100%;
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            outline: none;
+            padding: 12px;
+            font-size: 1rem;
+            color: #fff;
+            text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
+            border-radius: 4px;
+            box-shadow: inset 0 -5px 45px rgba(100, 100, 100, 0.2), 0 1px 1px rgba(255, 255, 255, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease; 
+        
+        button:hover {
+            background-color: #559dd0;
+            transform: translateY(-2px); 
+        }
+        
+        footer {
+            position: relative; 
+            bottom: 0%;
+            left: 0;
+            width: 100%;
+            background-color: #0078d4;
+            color: white;
+            text-align: center;
+            padding: 10px 0; 
+        }
+        
+        footer p {
+            margin: 0;
+        }
+
+        #view-submissions .form-container {
+            padding: 30px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        #view-submissions .form-container ul {
+            padding-left: 20px;
+            list-style: none;
+        }
+        
+        #view-submissions .form-container ul li {
+            margin-bottom: 10px;
+            font-size: 16px;
+            color: #fff; /* Ensure text is visible */
+        }
+        
+        #view-submissions .form-container button {
+            margin-top: 20px;
+        }
+        
+        #success-page .form-container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.5);
+            margin: 5% auto;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-out;
+            color: #fff;
+        }
+        
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+        
+        #success-page .form-container h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        #success-page .form-container ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        #success-page .form-container ul li {
+            margin: 10px 0;
+        }
+        
+        #success-page .form-container ul li a {
+            color: #0078d4;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        
+        #success-page .form-container ul li a:hover {
+            color: #ffeb3b;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                height: 50px;
+            }
+        
+            header h1 {
+                font-size: 28px;
+            }
+        
+            .form-container {
+                padding: 15px;
+                width: 95%;
+            }
+        
+            .menu-container h2 {
+                font-size: 20px;
+            }
+        
+            nav ul li {
+                margin: 10px 5px;
+            }
+        
+            nav ul li a {
+                font-size: 16px;
+                display: block;
+                padding: 5px;
+            }
+            
+            .fab {
+                width: 50px;
+                height: 50px;
+            }
+        }
+   
+        .fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .fab:hover {
+            background-color: #005fa3;
+            transform: scale(1.1); /* Slightly grow the button */
+        }
+    
+    
+    </style>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <h1>Internship Management System</h1>
+    </header>
+
+    <section id="login">
+        <div class="form-container">
+            <h2>Login</h2>
+            <form action="/login" method="POST" onsubmit="return submitForm(event)">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+                <br>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+                <br>
+                <input type="date" id="dob" name="dob" required>
+                <br>
+                <button type="submit">SUBMIT</button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <p><B>© TEAM VIT BHOPAL</B></p>
+    </footer>
+      <script>
+
+        function submitForm(event) {
+            event.preventDefault();
+        
+            const formData = new FormData(event.target);
+
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',  // Make sure we specify the correct content type
+                },
+                body: JSON.stringify(data),  // Send the form data as JSON
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Login successful:', data);
+                    
+                    window.location.href="/intenship"
+                   
+                } else {
+                    console.log('Login failed:', data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+        
+      </script>
+    
+
+</body>
+
+</html>

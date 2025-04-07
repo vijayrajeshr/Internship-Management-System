@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internship Management System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="tf141styles.css">
+    <script>
+        let internshipData = [];
+        let reportData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    showSection(this.getAttribute('href').substring(1));
+                });
+            });
+        });
+
+        function showMenu() {
+            document.getElementById('menu').style.display = 'block';
+            document.getElementById('login').style.display = 'none';
+            showSection('internship-details'); // Show the first section by default
+        }
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function updateViewSubmissions() {
+            const internshipList = document.getElementById('internship-list');
+            const reportList = document.getElementById('report-list');
+            internshipList.innerHTML = ''; // Clear previous entries
+            reportList.innerHTML = ''; // Clear previous entries
+
+            internshipData.forEach(data => {
+                const li = document.createElement('li');
+                li.textContent = `Internship: ${data.companyName} - Submitted on: ${data.startDate}`;
+                internshipList.appendChild(li);
+            });
+
+            reportData.forEach(data => {
+                const li = document.createElement('li');
+                li.textContent = `Report: ${data.reportType} - Submitted on: ${data.reportDate}`;
+                reportList.appendChild(li);
+            });
+        }
+
+        function validateInternshipForm() {
+            const startDate = document.getElementById('start-date').value;
+            const companyName = document.getElementById('company-name').value;
+            const companyAddress = document.getElementById('company-address').value;
+            const externalMentorName = document.getElementById('external-mentor-name').value;
+            const externalMentorContact = document.getElementById('external-mentor-contact').value;
+            const stipendAmount = document.getElementById('stipend-amount').value;
+            const offerLetter = document.getElementById('offer-letter').value;
+
+            if (!startDate || !companyName || !companyAddress || !externalMentorName || !externalMentorContact || !stipendAmount || !offerLetter) {
+                alert("Please fill all the fields before submitting.");
+                return false;
+            }
+
+            internshipData.push({
+                companyName: companyName,
+                startDate: startDate,
+                companyAddress: companyAddress,
+                externalMentorName: externalMentorName,
+                externalMentorContact: externalMentorContact,
+                stipendAmount: stipendAmount,
+                offerLetter: offerLetter
+            });
+            showSection('success-page');
+            return false; // Prevent actual form submission
+        }
+        function validateReportForm() {
+            const reportType = document.getElementById('report-type').value;
+            const reportFile = document.getElementById('report-file').value;
+
+            if (!reportType || !reportFile) {
+                alert("Please select the report type and upload the file.");
+                return false;
+            }
+
+            const reportDate = new Date().toLocaleDateString();
+            reportData.push({
+                reportType: reportType,
+                reportDate: reportDate,
+                reportFile: reportFile
+            });
+
+            showSection('success-page');
+            return false;
+        }
+
+        function logout() {
+            window.location.href = 'RUN__HERE__.html'; // Redirect to the specified page
+        }
+
+    
+        function goBack() {
+            showSection('menu'); // Go back to the menu
+        }
+    </script>
+</head>
+
+<body>
+
+    <header class="navbar">
+        <h1>Internship Management System</h1>
+    </header>
+
+    <section id="login">
+        <div class="form-container">
+            <h2>Student Login </h2>
+            <form onsubmit="event.preventDefault(); showMenu();">
+                <input type="text" id="username" placeholder="Username" name="username" required>
+                <br>
+                <input type="password" id="password" placeholder="Password" name="password" required>
+                <br>
+                <input type="date" id="dob" name="dob" required>
+                <br>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="menu" style="display: none;">
+        <div class="menu-container">
+            <h2>Menu</h2>
+            <nav>
+                <ul>
+                    <li><a href="#internship-details">Submit Internship Details</a></li>
+                    <li><a href="#report-submission">Submit Report</a></li>
+                    <li><a href="#view-submissions">View Submissions</a></li>
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+    <section id="internship-details" style="display: none;">
+        <div class="form-container">
+            <h2>Submit Internship Details</h2>
+            <form onsubmit="return validateInternshipForm()">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start-date" required>
+                <br>
+                <label for="company-name">Company Name:</label>
+                <input type="text" id="company-name" name="company-name" required>
+                <br>
+                <label for="company-address">Company Address:</label>
+                <input type="text" id="company-address" name="company-address" required>
+                <br>
+                <label for="external-mentor-name">External Mentor Name:</label>
+                <input type="text" id="external-mentor-name" name="external-mentor-name" required>
+                <br>
+                <label for="external-mentor-contact">External Mentor Contact:</label>
+                <input type="tel" id="external-mentor-contact" name="external-mentor-contact" required>
+                <br>
+                <label for="stipend-amount">Stipend Amount:</label>
+                <input type="number" id="stipend-amount" name="stipend-amount" required>
+                <br>
+                <label for="offer-letter">Upload Offer Letter:</label>
+                <input type="file" id="offer-letter" name="offer-letter" required>
+                <br>
+                <button type="submit">Submit Internship Details</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="report-submission" style="display: none;">
+        <div class="form-container">
+            <h2>Submit Report</h2>
+            <form onsubmit="return validateReportForm()">
+                <label for="report-type">Report Type:</label>
+                <select id="report-type" name="report-type" required>
+                    <option value="">Select Report Type</option>
+                    <option value="fortnightly">Fortnightly Report</option>
+                    <option value="assignment">Assignment Report</option>
+                    <option value="evaluation">Evaluation Report</option>
+                </select>
+                <br>
+                <label for="report-file">Upload Report:</label>
+                <input type="file" id="report-file" name="report-file" required>
+                <br>
+                <button type="submit">Submit Report</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="success-page" style="display: none;">
+        <div class="form-container">
+            <h2>Successfully Submitted!!!</h2>
+            <p>Your submission was successful! You can now:</p>
+            <ul>
+                <li><a href="#view-submissions" onclick="showSection('view-submissions'); updateViewSubmissions();">View Submissions</a></li>
+                <li><a href="javascript:void(0);" onclick="logout()">Logout</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <section id="view-submissions" style="display: none;">
+        <div class="form-container">
+            <h2>View Submissions</h2>
+            <p>Click the button to go back:</p>
+            <button onclick="goBack()">Go Back</button>
+            <div>
+                <h3>Internships Submitted:</h3>
+                <ul id="internship-list"></ul>
+                <h3>Reports Submitted:</h3>
+                <ul id="report-list"></ul>
+            </div>
+        </div>
+    </section>
+
+</body>
+
+</html>
